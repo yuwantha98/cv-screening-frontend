@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { Camera, Check, LockKeyhole, Save, UserRound } from "lucide-react";
+
 export default function ProfileSettingsPage() {
   return (
     <ProfileSettingsContent />
