@@ -35,7 +35,7 @@ const linkClass = ({ isActive }) =>
       : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
   }`;
 
-export default function Sidebar() {
+export default function Sidebar({ onNavigate }) {
   return (
     <aside className="min-h-screen w-64 shrink-0 border-r border-slate-200 bg-white p-4">
       <div className="mb-8 px-2">
@@ -45,7 +45,7 @@ export default function Sidebar() {
 
       <nav className="space-y-1">
         {mainLinks.map(({ label, path, icon: Icon }) => (
-          <NavLink key={path} to={path} className={linkClass}>
+          <NavLink key={path} to={path} className={linkClass} onClick={onNavigate}>
             <Icon size={18} />
             <span>{label}</span>
           </NavLink>
@@ -60,7 +60,7 @@ export default function Sidebar() {
 
       <nav className="space-y-1">
         {adminLinks.map(({ label, path, icon: Icon }) => (
-          <NavLink key={path} to={path} className={linkClass}>
+          <NavLink key={path} to={path} className={linkClass} onClick={onNavigate}>
             <Icon size={18} />
             <span>{label}</span>
           </NavLink>

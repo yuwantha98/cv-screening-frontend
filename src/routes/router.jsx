@@ -50,6 +50,17 @@ export const router = createBrowserRouter([
     element: <ForgotPasswordPage />,
   },
 
+  // Public UI preview while the authentication backend is unavailable.
+  {
+    element: <MainLayout />,
+    children: [
+      {
+        path: "/sidebar-preview",
+        element: <UserDashboardPage />,
+      },
+    ],
+  },
+
   // Logged-in HR / Admin pages
   {
     element: <ProtectedRoute allowedRoles={["HR", "ADMIN"]} />,
