@@ -1,6 +1,9 @@
-import { RouterProvider } from "react-router-dom";
-import { router } from "./routes/router";
+import JobDetailsPage from "./pages/jobs/JobDetailsPage";
 
 export default function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <JobDetailsPage />
+    </div>
+  );
 }
