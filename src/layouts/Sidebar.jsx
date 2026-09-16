@@ -29,38 +29,55 @@ const adminLinks = [
 ];
 
 const linkClass = ({ isActive }) =>
-  `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
+  `flex items-center gap-3 rounded-md px-3 py-2.5 text-xs font-medium transition ${
     isActive
-      ? "bg-blue-600 text-white"
-      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+      ? "bg-[#405b91] text-white"
+      : "text-[#b9cbe0] hover:bg-[#173f6d] hover:text-white"
   }`;
 
-export default function Sidebar() {
+export default function Sidebar({ onNavigate }) {
   return (
-    <aside className="min-h-screen w-64 shrink-0 border-r border-slate-200 bg-white p-4">
-      <div className="mb-8 px-2">
-        <h1 className="text-xl font-bold text-slate-900">TalentScreen AI</h1>
-        <p className="mt-1 text-xs text-slate-500">CV Screening System</p>
+    <aside className="min-h-screen w-64 shrink-0 bg-[#062f5e] p-4">
+      <div className="mb-8 flex items-center gap-2 px-2">
+        <span className="flex h-7 w-7 items-center justify-center rounded-md bg-white text-xs font-bold text-[#062f5e]">
+          TS
+        </span>
+        <div>
+          <h1 className="text-sm font-bold text-white">TalentScreen AI</h1>
+          <p className="mt-0.5 text-[9px] uppercase tracking-wide text-[#a9bfd8]">
+            HR intelligence
+          </p>
+        </div>
       </div>
 
       <nav className="space-y-1">
         {mainLinks.map(({ label, path, icon: Icon }) => (
-          <NavLink key={path} to={path} className={linkClass}>
+          <NavLink
+            key={path}
+            to={path}
+            className={linkClass}
+            onClick={onNavigate}
+          >
             <Icon size={18} />
             <span>{label}</span>
           </NavLink>
         ))}
       </nav>
 
-      <div className="my-5 border-t border-slate-200" />
+      <div className="my-5 border-t border-[#174578]" />
 
-      <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
+      <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-wider text-[#7898bd]">
         Admin
       </p>
 
       <nav className="space-y-1">
         {adminLinks.map(({ label, path, icon: Icon }) => (
-          <NavLink key={path} to={path} className={linkClass}>
+          <NavLink
+            key={path}
+            to={path}
+            className={linkClass}
+            onClick={onNavigate}
+          >
             <Icon size={18} />
             <span>{label}</span>
           </NavLink>
