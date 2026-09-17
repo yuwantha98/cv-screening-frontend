@@ -1,9 +1,9 @@
-import JobDetailsPage from "./pages/jobs/JobDetailsPage";
+import ExportReportPage from "./pages/reports/ExportReportPage";
 
 export default function App() {
   return (
     <div className="min-h-screen bg-gray-50">
-      <JobDetailsPage />
+      <ExportReportPage />
     </div>
   );
 }
