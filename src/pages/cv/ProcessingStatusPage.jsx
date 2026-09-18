@@ -49,7 +49,6 @@ export default function ProcessingStatusPage() {
         <h1 className="text-2xl font-bold text-gray-900">Processing Status</h1>
         
         <div className="flex items-center gap-3">
-          {/* Search Box with Magnifying Glass Icon & Focus State */}
           <div className="relative">
             <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-400">
               🔍
@@ -63,13 +62,11 @@ export default function ProcessingStatusPage() {
             />
           </div>
 
-          {/* Notification Button */}
           <button className="w-10 h-10 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-700 hover:bg-gray-50 transition shadow-sm relative">
             🔔
             <span className="absolute top-2 right-2 w-2 h-2 bg-blue-600 rounded-full"></span>
           </button>
 
-          {/* Help Button */}
           <button className="w-10 h-10 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-700 hover:bg-gray-50 transition shadow-sm font-bold text-sm">
             ?
           </button>

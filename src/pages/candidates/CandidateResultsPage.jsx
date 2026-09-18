@@ -1,8 +1,46 @@
+import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowUpDown, ChevronRight, Filter, Search, SlidersHorizontal, X } from "lucide-react";
+
+const candidates = [
+  { id: "maya-chen", name: "Maya Chen", role: "Senior Product Designer", initials: "MC", score: 96, location: "San Francisco, CA", experience: "8 years", skills: ["Figma", "Design systems", "Research"], status: "Top match", color: "bg-[#dce8f5] text-[#174575]" },
+  { id: "jordan-rivera", name: "Jordan Rivera", role: "Product Designer", initials: "JR", score: 91, location: "Austin, TX", experience: "6 years", skills: ["Figma", "Prototyping", "UX strategy"], status: "Strong match", color: "bg-[#fbe6d2] text-[#9a4d16]" },
+  { id: "olivia-wilson", name: "Olivia Wilson", role: "UX Researcher", initials: "OW", score: 87, location: "New York, NY", experience: "7 years", skills: ["User research", "Analytics", "Service design"], status: "Strong match", color: "bg-[#e4e8f2] text-[#3d4e76]" },
+  { id: "noah-patel", name: "Noah Patel", role: "Product Designer", initials: "NP", score: 82, location: "Chicago, IL", experience: "4 years", skills: ["Figma", "Interaction design", "HTML"], status: "Good match", color: "bg-[#dcefe9] text-[#17624e]" },
+  { id: "sophia-martin", name: "Sophia Martin", role: "Visual Designer", initials: "SM", score: 76, location: "Boston, MA", experience: "5 years", skills: ["Visual design", "Illustration", "Brand"], status: "Good match", color: "bg-[#f2e4ed] text-[#783d61]" },
+];
+
+const scoreColor = (score) => (score >= 90 ? "text-[#16805d]" : score >= 80 ? "text-[#c06b1b]" : "text-[#64748b]");
+
 export default function CandidateResultsPage() {
+  const [query, setQuery] = useState("");
+  const [minScore, setMinScore] = useState("All scores");
+  const [role, setRole] = useState("All roles");
+  const [sortByScore, setSortByScore] = useState(true);
+
+  const filteredCandidates = useMemo(() => candidates
+    .filter((candidate) => `${candidate.name} ${candidate.role} ${candidate.location} ${candidate.skills.join(" ")}`.toLowerCase().includes(query.toLowerCase()))
+    .filter((candidate) => minScore === "All scores" || candidate.score >= Number(minScore))
+    .filter((candidate) => role === "All roles" || candidate.role === role)
+    .sort((a, b) => sortByScore ? b.score - a.score : a.name.localeCompare(b.name)), [query, minScore, role, sortByScore]);
+
+  const clearFilters = () => { setQuery(""); setMinScore("All scores"); setRole("All roles"); };
+
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-6">
-      <h1 className="text-2xl font-bold text-slate-900">Candidate Results</h1>
-      <p className="mt-2 text-slate-600">Processed candidate results will be displayed here.</p>
-    </section>
+    <div className="space-y-5">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div><p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#e07b25]">Talent pool</p><h1 className="mt-1 text-2xl font-bold text-[#15395f]">Candidate results</h1><p className="mt-1 text-sm text-[#71829a]">Review and shortlist the strongest matches for your open roles.</p></div>
+        <Link to="/candidate-ranking" className="inline-flex items-center justify-center gap-2 rounded-md bg-[#0b3767] px-4 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-[#174b80]">Open ranking view <ChevronRight size={15} /></Link>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-3"><div className="rounded-lg border border-[#dfe6ef] bg-white p-4"><p className="text-xs text-[#71829a]">Candidates screened</p><p className="mt-1 text-2xl font-bold text-[#15395f]">128</p><p className="mt-1 text-[11px] text-[#16805d]">+18 this week</p></div><div className="rounded-lg border border-[#dfe6ef] bg-white p-4"><p className="text-xs text-[#71829a]">Strong matches</p><p className="mt-1 text-2xl font-bold text-[#15395f]">24</p><p className="mt-1 text-[11px] text-[#71829a]">80% match or higher</p></div><div className="rounded-lg border border-[#dfe6ef] bg-white p-4"><p className="text-xs text-[#71829a]">Active shortlist</p><p className="mt-1 text-2xl font-bold text-[#15395f]">8</p><p className="mt-1 text-[11px] text-[#e07b25]">3 awaiting review</p></div></div>
+
+      <section className="overflow-hidden rounded-lg border border-[#dfe6ef] bg-white">
+        <div className="border-b border-[#e8edf3] p-4 sm:p-5"><div className="flex flex-col gap-3 lg:flex-row lg:items-center"><div className="relative min-w-0 flex-1"><Search className="absolute left-3 top-2.5 text-[#8a9ab0]" size={16} /><input value={query} onChange={(event) => setQuery(event.target.value)} className="h-10 w-full rounded-md border border-[#dfe6ef] bg-[#f8fafc] pl-9 pr-9 text-sm outline-none focus:border-[#315b91] focus:ring-2 focus:ring-[#d9e5f5]" placeholder="Search by name, skill, role, or location" />{query && <button type="button" onClick={() => setQuery("")} aria-label="Clear search" className="absolute right-2 top-2 rounded p-1 text-[#8a9ab0] hover:bg-slate-200"><X size={14} /></button>}</div><div className="flex flex-wrap gap-2"><div className="relative"><Filter className="pointer-events-none absolute left-2.5 top-2.5 text-[#8a9ab0]" size={14} /><select value={role} onChange={(event) => setRole(event.target.value)} className="h-10 appearance-none rounded-md border border-[#dfe6ef] bg-white pl-8 pr-8 text-xs font-medium text-[#365372] outline-none"><option>All roles</option><option>Senior Product Designer</option><option>Product Designer</option><option>UX Researcher</option><option>Visual Designer</option></select></div><select value={minScore} onChange={(event) => setMinScore(event.target.value)} className="h-10 rounded-md border border-[#dfe6ef] bg-white px-3 text-xs font-medium text-[#365372] outline-none"><option>All scores</option><option value="90">90% and above</option><option value="80">80% and above</option><option value="70">70% and above</option></select><button type="button" onClick={clearFilters} className="h-10 rounded-md border border-[#dfe6ef] px-3 text-xs font-semibold text-[#58708d] hover:bg-[#f5f8fb]">Clear</button></div></div><div className="mt-4 flex items-center justify-between text-xs text-[#71829a]"><span><strong className="text-[#365372]">{filteredCandidates.length}</strong> candidates shown</span><button type="button" onClick={() => setSortByScore(!sortByScore)} className="inline-flex items-center gap-1.5 font-semibold text-[#315b91] hover:text-[#0b3767]"><ArrowUpDown size={14} /> {sortByScore ? "Sort: Match score" : "Sort: Name"}</button></div></div>
+        <div className="hidden overflow-x-auto md:block"><table className="w-full min-w-[760px] text-left"><thead className="bg-[#f8fafc] text-[10px] uppercase tracking-wider text-[#8191a6]"><tr><th className="px-5 py-3 font-semibold">Candidate</th><th className="px-5 py-3 font-semibold">Match score</th><th className="px-5 py-3 font-semibold">Experience</th><th className="px-5 py-3 font-semibold">Top skills</th><th className="px-5 py-3 font-semibold">Status</th><th className="px-5 py-3" /></tr></thead><tbody className="divide-y divide-[#edf1f5]">{filteredCandidates.map((candidate) => <tr key={candidate.id} className="hover:bg-[#fbfcfe]"><td className="px-5 py-4"><Link to={`/candidates/${candidate.id}`} className="flex items-center gap-3"><span className={`flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold ${candidate.color}`}>{candidate.initials}</span><span><span className="block text-sm font-semibold text-[#17395f] hover:text-[#315b91]">{candidate.name}</span><span className="block text-[11px] text-[#8191a6]">{candidate.role} · {candidate.location}</span></span></Link></td><td className="px-5 py-4"><span className={`text-lg font-bold ${scoreColor(candidate.score)}`}>{candidate.score}%</span></td><td className="px-5 py-4 text-xs text-[#536b87]">{candidate.experience}</td><td className="px-5 py-4"><div className="flex gap-1.5">{candidate.skills.slice(0, 2).map((skill) => <span key={skill} className="rounded bg-[#eef3f8] px-2 py-1 text-[10px] font-medium text-[#49627f]">{skill}</span>)}</div></td><td className="px-5 py-4"><span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#16805d]"><span className="h-1.5 w-1.5 rounded-full bg-current" />{candidate.status}</span></td><td className="px-5 py-4 text-right"><Link to={`/candidates/${candidate.id}`} aria-label={`View ${candidate.name}`} className="rounded p-2 text-[#71829a] hover:bg-[#eef3f8] hover:text-[#0b3767]"><ChevronRight size={17} /></Link></td></tr>)}</tbody></table></div>
+        <div className="divide-y divide-[#edf1f5] md:hidden">{filteredCandidates.map((candidate) => <Link key={candidate.id} to={`/candidates/${candidate.id}`} className="block p-4 hover:bg-[#fbfcfe]"><div className="flex items-start justify-between gap-3"><div className="flex items-center gap-3"><span className={`flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold ${candidate.color}`}>{candidate.initials}</span><span><span className="block text-sm font-semibold text-[#17395f]">{candidate.name}</span><span className="block text-[11px] text-[#8191a6]">{candidate.role}</span></span></div><span className={`text-lg font-bold ${scoreColor(candidate.score)}`}>{candidate.score}%</span></div><div className="mt-3 flex items-center justify-between text-[11px] text-[#71829a]"><span>{candidate.location}</span><span className="font-semibold text-[#16805d]">{candidate.status}</span></div></Link>)}</div>
+        {filteredCandidates.length === 0 && <div className="p-10 text-center"><SlidersHorizontal className="mx-auto text-[#9aabc0]" size={24} /><p className="mt-2 text-sm font-semibold text-[#365372]">No candidates found</p><p className="mt-1 text-xs text-[#8191a6]">Try adjusting your search or filters.</p></div>}
+      </section>
+    </div>
   );
 }
