@@ -1,326 +1,425 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function EditJobPage() {
-  const [jobTitle, setJobTitle] = useState("Senior Frontend Engineer");
-  const [department, setDepartment] = useState("Engineering");
-  const [location, setLocation] = useState("Remote, New York, NY");
-  const [employmentType, setEmploymentType] = useState("Full-time");
-  const [experienceLevel, setExperienceLevel] = useState("Senior (5+ years)");
-  const [description, setDescription] = useState(
-    "We're looking for a driven Senior Frontend Engineer to join our growing product team. You will own the architecture and implementation of key user-facing features, collaborating closely with design and backend teams..."
-  );
-  
-  // Required Skills state
+export default function CreateJobPage() {
+  const navigate = useNavigate();
+
   const [skills, setSkills] = useState(["React", "TypeScript", "Node.js"]);
-  const [newSkill, setNewSkill] = useState("");
 
-  // AI Screening Settings state
+  const [skillInput, setSkillInput] = useState("");
   const [matchScore, setMatchScore] = useState(70);
-  const [topCandidates, setTopCandidates] = useState("Top 10 candidates");
-  const [enableBiasDetection, setEnableBiasDetection] = useState(true);
-  const [sendEmailAlerts, setSendEmailAlerts] = useState(true);
-  const [autoReject, setAutoReject] = useState(false);
 
-  // Salary Range state
-  const [minSalary, setMinSalary] = useState("80,000");
-  const [maxSalary, setMaxSalary] = useState("130,000");
-  const [displaySalary, setDisplaySalary] = useState(false);
+  const [formData, setFormData] = useState({
+    jobTitle: "",
+    department: "",
+    location: "",
+    employmentType: "Full-time",
+    experienceLevel: "Senior (5+ years)",
+    jobDescription:
+      "We're looking for a driven Senior Frontend Engineer to join our growing product team. You will own the architecture and implementation of key user-facing features, collaborating closely with design and backend teams...",
+    autoShortlist: "Top 10 candidates",
+    biasDetection: true,
+    shortlistEmailAlerts: true,
+    autoReject: false,
+    minSalary: "80,000",
+    maxSalary: "130,000",
+    displaySalary: false,
+  });
 
-  const handleAddSkill = (e) => {
-    e.preventDefault();
-    if (newSkill.trim() && !skills.includes(newSkill.trim())) {
-      setSkills([...skills, newSkill.trim()]);
-      setNewSkill("");
+  const handleChange = (event) => {
+    const { name, value, type, checked } = event.target;
+
+    setFormData((previous) => ({
+      ...previous,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const addSkill = () => {
+    const value = skillInput.trim();
+
+    if (!value) return;
+
+    if (!skills.includes(value)) {
+      setSkills((previous) => [...previous, value]);
+    }
+
+    setSkillInput("");
+  };
+
+  const removeSkill = (skill) => {
+    setSkills((previous) => previous.filter((item) => item !== skill));
+  };
+
+  const handleSkillKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      addSkill();
     }
   };
 
-  const handleRemoveSkill = (skillToRemove) => {
-    setSkills(skills.filter((skill) => skill !== skillToRemove));
-  };
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
-  const handleSave = (e) => {
-    e.preventDefault();
-    console.log("Job Updated/Saved:", {
-      jobTitle,
-      department,
-      location,
-      employmentType,
-      experienceLevel,
-      description,
-      skills,
-      matchScore,
-      salary: { minSalary, maxSalary }
-    });
+    const jobData = {
+      ...formData,
+      requiredSkills: skills,
+      minimumMatchScore: matchScore,
+    };
+
+    console.log("Job data:", jobData);
+
+    // Backend connection will be added later.
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto bg-gray-50 min-h-screen">
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Create New Job Posting</h1>
-        <p className="text-xs text-gray-500 mt-1">Fill in the details and publish to start AI-powered screening.</p>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Page description */}
+      <div>
+        <h2 className="text-2xl font-bold text-[#12395f]">
+          Create New Job Posting
+        </h2>
+
+        <p className="mt-1 text-xs font-medium text-[#7b7b7b]">
+          Fill in the details and publish to start AI-powered screening.
+        </p>
       </div>
 
-      <form onSubmit={handleSave} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        {/* Left & Center Columns (Basic Info, Description, Skills) */}
-        <div className="lg:col-span-2 flex flex-col gap-6">
-          
-          {/* Basic Information Box */}
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-            <h3 className="text-sm font-bold text-gray-800 mb-4 uppercase tracking-wider">Basic Information</h3>
-            
-            <div className="flex flex-col gap-4">
+      <div className="grid grid-cols-1 gap-8 xl:grid-cols-[1.65fr_1fr]">
+        {/* LEFT */}
+        <div className="space-y-6">
+          {/* Basic Information */}
+          <section className="rounded-xl border border-[#8da1c3] bg-white p-5">
+            <h3 className="mb-5 text-base font-bold text-[#12395f]">
+              Basic Information
+            </h3>
+
+            <div>
+              <label className="mb-2 block text-xs font-semibold text-[#12395f]">
+                Job Title *
+              </label>
+
+              <input
+                name="jobTitle"
+                value={formData.jobTitle}
+                onChange={handleChange}
+                placeholder="e.g. Senior Frontend Engineer"
+                className="h-10 w-full rounded-xl border border-[#a8b7d1] px-4 text-sm outline-none placeholder:text-[#a4b0c5] focus:border-[#405b91]"
+              />
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">Job Title *</label>
-                <input 
-                  type="text" 
-                  value={jobTitle} 
-                  onChange={(e) => setJobTitle(e.target.value)}
-                  className="w-full bg-white border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                <label className="mb-2 block text-xs font-semibold text-[#12395f]">
+                  Department *
+                </label>
+
+                <select
+                  name="department"
+                  value={formData.department}
+                  onChange={handleChange}
+                  className="h-10 w-full rounded-xl border border-[#a8b7d1] bg-white px-4 text-sm text-[#405b91] outline-none"
+                >
+                  <option value="">Select department</option>
+                  <option>Engineering</option>
+                  <option>Product</option>
+                  <option>Analytics</option>
+                  <option>Design</option>
+                  <option>Infrastructure</option>
+                  <option>Marketing</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="mb-2 block text-xs font-semibold text-[#12395f]">
+                  Location
+                </label>
+
+                <input
+                  name="location"
+                  value={formData.location}
+                  onChange={handleChange}
+                  placeholder="e.g. Remote, New York, NY"
+                  className="h-10 w-full rounded-xl border border-[#a8b7d1] px-4 text-sm outline-none placeholder:text-[#a4b0c5]"
                 />
               </div>
+            </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">Department *</label>
-                  <select 
-                    value={department} 
-                    onChange={(e) => setDepartment(e.target.value)}
-                    className="w-full bg-white border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700"
-                  >
-                    <option>Engineering</option>
-                    <option>Product</option>
-                    <option>Design</option>
-                    <option>Marketing</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">Location</label>
-                  <input 
-                    type="text" 
-                    value={location} 
-                    onChange={(e) => setLocation(e.target.value)}
-                    className="w-full bg-white border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  />
-                </div>
+            <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <label className="mb-2 block text-xs font-semibold text-[#12395f]">
+                  Employment Type
+                </label>
+
+                <select
+                  name="employmentType"
+                  value={formData.employmentType}
+                  onChange={handleChange}
+                  className="h-10 w-full rounded-xl border border-[#a8b7d1] bg-white px-4 text-sm text-[#405b91] outline-none"
+                >
+                  <option>Full-time</option>
+                  <option>Part-time</option>
+                  <option>Contract</option>
+                  <option>Internship</option>
+                </select>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">Employment Type</label>
-                  <select 
-                    value={employmentType} 
-                    onChange={(e) => setEmploymentType(e.target.value)}
-                    className="w-full bg-white border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700"
-                  >
-                    <option>Full-time</option>
-                    <option>Part-time</option>
-                    <option>Contract</option>
-                    <option>Internship</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">Experience Level</label>
-                  <select 
-                    value={experienceLevel} 
-                    onChange={(e) => setExperienceLevel(e.target.value)}
-                    className="w-full bg-white border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700"
-                  >
-                    <option>Senior (5+ years)</option>
-                    <option>Mid-level (3-5 years)</option>
-                    <option>Junior (1-3 years)</option>
-                    <option>Entry Level</option>
-                  </select>
-                </div>
+              <div>
+                <label className="mb-2 block text-xs font-semibold text-[#12395f]">
+                  Experience Level
+                </label>
+
+                <select
+                  name="experienceLevel"
+                  value={formData.experienceLevel}
+                  onChange={handleChange}
+                  className="h-10 w-full rounded-xl border border-[#a8b7d1] bg-white px-4 text-sm text-[#405b91] outline-none"
+                >
+                  <option>Entry Level</option>
+                  <option>Mid Level</option>
+                  <option>Senior (5+ years)</option>
+                </select>
               </div>
             </div>
-          </div>
+          </section>
 
-          {/* Job Description Box */}
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-            <div className="flex justify-between items-center mb-1">
-              <label className="block text-xs font-bold text-gray-800 uppercase tracking-wider">Job Description *</label>
-              <span className="text-xs text-gray-400">0 words</span>
+          {/* Description */}
+          <section className="rounded-xl border border-[#8da1c3] bg-white p-5">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h3 className="text-sm font-bold text-[#12395f]">
+                  Job Description *
+                </h3>
+
+                <p className="mt-1 text-[10px] text-[#7184a1]">
+                  Used by AI to match and rank candidates. Include
+                  responsibilities, qualifications, and team context.
+                </p>
+              </div>
+
+              <span className="text-[10px] text-[#aab5c7]">
+                {
+                  formData.jobDescription.trim().split(/\s+/).filter(Boolean)
+                    .length
+                }{" "}
+                words
+              </span>
             </div>
-            <p className="text-xs text-gray-500 mb-3">Used by AI to match and rank candidates. Include responsibilities, qualifications, and team context.</p>
-            
-            <textarea 
-              rows="5"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full bg-white border border-gray-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700 leading-relaxed"
-            ></textarea>
-            <p className="text-[11px] text-gray-400 mt-1">Minimum 100 words recommended for better AI matching accuracy.</p>
-          </div>
 
-          {/* Required Skills Box */}
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-            <h3 className="text-xs font-bold text-gray-800 mb-1 uppercase tracking-wider">Required Skills</h3>
-            <p className="text-xs text-gray-500 mb-4">Skills added here are used by the AI to score and rank incoming CVs.</p>
-            
-            <div className="flex flex-wrap gap-2 mb-4">
-              {skills.map((skill, index) => (
-                <span key={index} className="bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1.5 rounded-lg border border-blue-200 flex items-center gap-2">
+            <textarea
+              name="jobDescription"
+              value={formData.jobDescription}
+              onChange={handleChange}
+              className="mt-4 h-44 w-full resize-none rounded-xl border border-[#a8b7d1] p-4 text-xs leading-6 text-[#7184a1] outline-none focus:border-[#405b91]"
+            />
+
+            <p className="mt-2 text-[9px] text-[#a4b0c5]">
+              Minimum 100 words recommended for better AI matching accuracy.
+            </p>
+          </section>
+
+          {/* Skills */}
+          <section className="rounded-xl border border-[#8da1c3] bg-white p-5">
+            <h3 className="text-sm font-bold text-[#12395f]">
+              Required Skills
+            </h3>
+
+            <p className="mt-1 text-[10px] text-[#7184a1]">
+              Skills added here are used by the AI to score and rank incoming
+              CVs.
+            </p>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              {skills.map((skill) => (
+                <button
+                  key={skill}
+                  type="button"
+                  onClick={() => removeSkill(skill)}
+                  className="rounded-full bg-[#eef0ff] px-4 py-2 text-[11px] font-medium text-[#405b91]"
+                >
                   {skill}
-                  <button type="button" onClick={() => handleRemoveSkill(skill)} className="text-blue-400 hover:text-red-600 font-bold">×</button>
-                </span>
+                  <span className="ml-2">×</span>
+                </button>
               ))}
             </div>
 
-            <div className="flex gap-2">
-              <input 
-                type="text" 
-                placeholder="Type a skill and press Enter or Add..." 
-                value={newSkill}
-                onChange={(e) => setNewSkill(e.target.value)}
-                className="flex-1 bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            <div className="mt-4 flex gap-3">
+              <input
+                value={skillInput}
+                onChange={(event) => setSkillInput(event.target.value)}
+                onKeyDown={handleSkillKeyDown}
+                placeholder="Type a skill and press Enter or Add..."
+                className="h-10 min-w-0 flex-1 rounded-xl border border-[#a8b7d1] px-4 text-xs outline-none placeholder:text-[#9eacc3]"
               />
-              <button 
-                type="button" 
-                onClick={handleAddSkill}
-                className="bg-gray-100 text-gray-700 border border-gray-300 px-5 py-2 rounded-lg text-sm font-semibold hover:bg-gray-200 transition"
+
+              <button
+                type="button"
+                onClick={addSkill}
+                className="rounded-xl border border-[#a8b7d1] bg-[#eef0ff] px-5 text-xs font-semibold text-[#405b91]"
               >
                 Add
               </button>
             </div>
-          </div>
-
+          </section>
         </div>
 
-        {/* Right Column (AI Screening Settings & Salary Range) */}
-        <div className="flex flex-col gap-6">
-          
-          {/* AI Screening Settings */}
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-            <h3 className="text-xs font-bold text-gray-800 mb-4 uppercase tracking-wider">AI Screening Settings</h3>
-            
-            <div className="mb-5">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-xs font-semibold text-gray-700">Minimum Match Score</span>
-                <span className="text-xs font-bold bg-blue-50 text-blue-700 px-2 py-0.5 rounded border border-blue-200">{matchScore}%</span>
+        {/* RIGHT */}
+        <div className="space-y-6">
+          {/* AI Settings */}
+          <section className="rounded-xl border border-[#8da1c3] bg-white p-5">
+            <h3 className="text-lg font-bold text-[#12395f]">
+              AI Screening Settings
+            </h3>
+
+            <div className="mt-6">
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-semibold text-[#12395f]">
+                  Minimum Match Score
+                </label>
+
+                <span className="rounded-full bg-[#efefff] px-4 py-1 text-sm font-semibold text-[#405b91]">
+                  {matchScore}%
+                </span>
               </div>
-              <input 
-                type="range" 
-                min="50" 
-                max="100" 
-                value={matchScore} 
-                onChange={(e) => setMatchScore(e.target.value)}
-                className="w-full accent-blue-600 cursor-pointer"
+
+              <input
+                type="range"
+                min="50"
+                max="100"
+                value={matchScore}
+                onChange={(event) => setMatchScore(Number(event.target.value))}
+                className="mt-3 w-full accent-[#405b91]"
               />
-              <div className="flex justify-between text-[10px] text-gray-400 mt-1">
+
+              <div className="flex justify-between text-xs text-[#a0aec2]">
                 <span>50%</span>
                 <span>100%</span>
               </div>
             </div>
 
-            <div className="mb-5">
-              <label className="block text-xs font-semibold text-gray-700 mb-1">Auto-shortlist Top</label>
-              <select 
-                value={topCandidates}
-                onChange={(e) => setTopCandidates(e.target.value)}
-                className="w-full bg-white border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700"
+            <div className="mt-5">
+              <label className="mb-2 block text-sm font-semibold text-[#12395f]">
+                Auto-shortlist Top
+              </label>
+
+              <select
+                name="autoShortlist"
+                value={formData.autoShortlist}
+                onChange={handleChange}
+                className="h-11 w-full rounded-xl border border-[#a8b7d1] bg-white px-4 text-sm text-[#405b91] outline-none"
               >
+                <option>Top 5 candidates</option>
                 <option>Top 10 candidates</option>
                 <option>Top 20 candidates</option>
-                <option>Top 5 candidates</option>
               </select>
             </div>
 
-            <div className="flex flex-col gap-3 pt-2 border-t border-gray-100">
-              <label className="flex items-center gap-2.5 text-xs font-medium text-gray-700 cursor-pointer">
-                <input 
-                  type="checkbox" 
-                  checked={enableBiasDetection}
-                  onChange={(e) => setEnableBiasDetection(e.target.checked)}
-                  className="w-4 h-4 text-blue-600 rounded border-gray-300 accent-blue-600"
+            <div className="mt-5 space-y-3">
+              <label className="flex items-center gap-3 text-sm font-semibold text-[#12395f]">
+                <input
+                  type="checkbox"
+                  name="biasDetection"
+                  checked={formData.biasDetection}
+                  onChange={handleChange}
+                  className="h-4 w-4 accent-[#405b91]"
                 />
                 Enable AI bias detection
               </label>
 
-              <label className="flex items-center gap-2.5 text-xs font-medium text-gray-700 cursor-pointer">
-                <input 
-                  type="checkbox" 
-                  checked={sendEmailAlerts}
-                  onChange={(e) => setSendEmailAlerts(e.target.checked)}
-                  className="w-4 h-4 text-blue-600 rounded border-gray-300 accent-blue-600"
+              <label className="flex items-center gap-3 text-sm font-semibold text-[#12395f]">
+                <input
+                  type="checkbox"
+                  name="shortlistEmailAlerts"
+                  checked={formData.shortlistEmailAlerts}
+                  onChange={handleChange}
+                  className="h-4 w-4 accent-[#405b91]"
                 />
                 Send shortlist email alerts
               </label>
 
-              <label className="flex items-center gap-2.5 text-xs font-medium text-gray-700 cursor-pointer">
-                <input 
-                  type="checkbox" 
-                  checked={autoReject}
-                  onChange={(e) => setAutoReject(e.target.checked)}
-                  className="w-4 h-4 text-blue-600 rounded border-gray-300 accent-blue-600"
+              <label className="flex items-center gap-3 text-sm font-semibold text-[#12395f]">
+                <input
+                  type="checkbox"
+                  name="autoReject"
+                  checked={formData.autoReject}
+                  onChange={handleChange}
+                  className="h-4 w-4 accent-[#405b91]"
                 />
                 Auto-reject below threshold
               </label>
             </div>
-          </div>
+          </section>
 
-          {/* Salary Range */}
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-            <h3 className="text-xs font-bold text-gray-800 mb-4 uppercase tracking-wider">Salary Range</h3>
-            
-            <div className="grid grid-cols-2 gap-3 mb-4">
+          {/* Salary */}
+          <section className="rounded-xl border border-[#8da1c3] bg-white p-6">
+            <h3 className="text-lg font-bold text-[#12395f]">Salary Range</h3>
+
+            <div className="mt-6 grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-[11px] text-gray-500 mb-1">Min (USD)</label>
-                <input 
-                  type="text" 
-                  value={minSalary}
-                  onChange={(e) => setMinSalary(e.target.value)}
-                  className="w-full bg-white border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                <label className="mb-2 block text-xs font-medium text-[#12395f]">
+                  Min (USD)
+                </label>
+
+                <input
+                  name="minSalary"
+                  value={formData.minSalary}
+                  onChange={handleChange}
+                  className="h-12 w-full rounded-xl border border-[#a8b7d1] px-4 text-base text-[#8b9dbb] outline-none"
                 />
               </div>
+
               <div>
-                <label className="block text-[11px] text-gray-500 mb-1">Max (USD)</label>
-                <input 
-                  type="text" 
-                  value={maxSalary}
-                  onChange={(e) => setMaxSalary(e.target.value)}
-                  className="w-full bg-white border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                <label className="mb-2 block text-xs font-medium text-[#12395f]">
+                  Max (USD)
+                </label>
+
+                <input
+                  name="maxSalary"
+                  value={formData.maxSalary}
+                  onChange={handleChange}
+                  className="h-12 w-full rounded-xl border border-[#a8b7d1] px-4 text-base text-[#8b9dbb] outline-none"
                 />
               </div>
             </div>
 
-            <label className="flex items-center gap-2 text-xs font-medium text-gray-700 cursor-pointer">
-              <input 
-                type="checkbox" 
-                checked={displaySalary}
-                onChange={(e) => setDisplaySalary(e.target.checked)}
-                className="w-4 h-4 text-blue-600 rounded border-gray-300 accent-blue-600"
+            <label className="mt-5 flex items-center gap-3 text-xs font-medium text-[#405b91]">
+              <input
+                type="checkbox"
+                name="displaySalary"
+                checked={formData.displaySalary}
+                onChange={handleChange}
+                className="h-4 w-4 accent-[#405b91]"
               />
               Display salary range on listing
             </label>
-          </div>
+          </section>
 
-          {/* Action Buttons */}
-          <div className="flex flex-col gap-3">
-            <button 
-              type="submit" 
-              className="w-full bg-[#0B2149] text-white text-sm font-semibold py-3 rounded-xl hover:bg-blue-900 transition shadow-md"
+          {/* Buttons */}
+          <div className="space-y-4">
+            <button
+              type="submit"
+              className="h-12 w-full rounded-lg bg-[#405b91] text-lg font-semibold text-white hover:bg-[#354f81]"
             >
               Publish Job
             </button>
-            <button 
-              type="button" 
-              className="w-full bg-white text-gray-700 border border-gray-300 text-sm font-semibold py-3 rounded-xl hover:bg-gray-50 transition shadow-sm"
+
+            <button
+              type="button"
+              className="h-12 w-full rounded-lg border border-[#8398ba] bg-white text-lg font-semibold text-[#405b91]"
             >
               Save as Draft
             </button>
-            <button 
-              type="button" 
-              className="w-full text-gray-500 text-sm font-medium py-2 hover:text-gray-700 transition"
+
+            <button
+              type="button"
+              onClick={() => navigate("/jobs")}
+              className="w-full text-center text-base font-medium text-[#818181]"
             >
               Cancel
             </button>
           </div>
-
         </div>
-
-      </form>
-    </div>
+      </div>
+    </form>
   );
 }

@@ -39,13 +39,25 @@ export default function Sidebar({ onNavigate }) {
   return (
     <aside className="min-h-screen w-64 shrink-0 bg-[#062f5e] p-4">
       <div className="mb-8 flex items-center gap-2 px-2">
-        <span className="flex h-7 w-7 items-center justify-center rounded-md bg-white text-xs font-bold text-[#062f5e]">TS</span>
-        <div><h1 className="text-sm font-bold text-white">TalentScreen AI</h1><p className="mt-0.5 text-[9px] uppercase tracking-wide text-[#a9bfd8]">HR intelligence</p></div>
+        <span className="flex h-7 w-7 items-center justify-center rounded-md bg-white text-xs font-bold text-[#062f5e]">
+          TS
+        </span>
+        <div>
+          <h1 className="text-sm font-bold text-white">TalentScreen AI</h1>
+          <p className="mt-0.5 text-[9px] uppercase tracking-wide text-[#a9bfd8]">
+            HR intelligence
+          </p>
+        </div>
       </div>
 
       <nav className="space-y-1">
         {mainLinks.map(({ label, path, icon: Icon }) => (
-          <NavLink key={path} to={path} className={linkClass} onClick={onNavigate}>
+          <NavLink
+            key={path}
+            to={path}
+            className={linkClass}
+            onClick={onNavigate}
+          >
             <Icon size={18} />
             <span>{label}</span>
           </NavLink>
@@ -60,7 +72,12 @@ export default function Sidebar({ onNavigate }) {
 
       <nav className="space-y-1">
         {adminLinks.map(({ label, path, icon: Icon }) => (
-          <NavLink key={path} to={path} className={linkClass} onClick={onNavigate}>
+          <NavLink
+            key={path}
+            to={path}
+            className={linkClass}
+            onClick={onNavigate}
+          >
             <Icon size={18} />
             <span>{label}</span>
           </NavLink>

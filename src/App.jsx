@@ -6,6 +6,7 @@ export default function App() {
   return (
     <Router>
       <Routes>
+        {/* මුලින්ම /login වෙත යොමු කරයි */}
         <Route path="/" element={<Navigate to="/login" />} />
         
         {/* Login Page */}
