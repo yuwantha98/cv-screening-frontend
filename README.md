@@ -351,6 +351,16 @@ http://localhost:5173
 Production Build Check
 npm run build
 
+### Backend setup
+
+The Express API lives in `server/` and runs on port `5000` by default. Copy `.env.example` to `.env`, make sure MongoDB is running, then use:
+
+```bash
+npm run server:dev
+```
+
+The API health check is available at `http://localhost:5000/api/health`. Run `npm run dev` in a second terminal for the Vite frontend. The backend accepts requests from `CLIENT_URL` and supports the HttpOnly-cookie authentication flow described above.
+
 Every member should confirm the project builds successfully before merging significant frontend changes.
 
 13. Environment and Security Rules
