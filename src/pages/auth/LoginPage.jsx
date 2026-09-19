@@ -1,19 +1,48 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function LoginPage() {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
+
     if (!email || !password) {
       setError("Email and Password are required!");
       return;
     }
-    setError("");
-    console.log("Login submitted:", { email, password });
+
+    try {
+      setLoading(true);
+
+      // Backend Login API call
+      const response = await axios.post("http://localhost:5000/api/users/login", {
+        email,
+        password
+      });
+
+      if (response.data?.token) {
+      
+        localStorage.setItem("token", response.data.token);
+        if (response.data.user) {
+          localStorage.setItem("user", JSON.stringify(response.data.user));
+        }
+
+        
+        navigate("/dashboard");
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || "Invalid credentials. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -71,6 +100,7 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 className="border border-gray-200 bg-gray-50/50 p-3 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 text-gray-800"
                 placeholder="name@company.com"
+                required
               />
             </div>
             
@@ -82,14 +112,16 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 className="border border-gray-200 bg-gray-50/50 p-3 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 text-gray-800"
                 placeholder="••••••••"
+                required
               />
             </div>
             
             <button 
               type="submit" 
-              className="bg-[#0B2149] text-white font-bold py-3.5 px-4 rounded-xl mt-4 hover:bg-blue-900 transition-all text-sm cursor-pointer"
+              disabled={loading}
+              className="bg-[#0B2149] text-white font-bold py-3.5 px-4 rounded-xl mt-4 hover:bg-blue-900 transition-all text-sm cursor-pointer disabled:opacity-50"
             >
-              → Sign in
+              {loading ? "Signing in..." : "→ Sign in"}
             </button>
           </form>
 

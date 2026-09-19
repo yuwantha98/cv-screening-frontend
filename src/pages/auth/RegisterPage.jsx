@@ -1,15 +1,21 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function RegisterPage() {
+  const navigate = useNavigate();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
+    setError("");
+
     if (!name || !email || !password || !confirmPassword) {
       setError("All fields are required!");
       return;
@@ -18,8 +24,27 @@ export default function RegisterPage() {
       setError("Passwords do not match!");
       return;
     }
-    setError("");
-    console.log("Register submitted:", { name, email, password });
+
+    try {
+      setLoading(true);
+      
+      // Backend Register API call
+      const response = await axios.post("http://localhost:5000/api/users/register", {
+        name,
+        email,
+        password,
+        role: "HR Manager"
+      });
+
+      if (response.status === 200 || response.status === 201) {
+        alert("Registration Successful!");
+        navigate("/login"); // Redirect to Login page
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || "Registration failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -77,6 +102,7 @@ export default function RegisterPage() {
                 onChange={(e) => setName(e.target.value)}
                 className="border border-gray-200 bg-gray-50/50 p-2.5 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-blue-600 text-gray-800"
                 placeholder="Enter your name"
+                required
               />
             </div>
 
@@ -88,6 +114,7 @@ export default function RegisterPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 className="border border-gray-200 bg-gray-50/50 p-2.5 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-blue-600 text-gray-800"
                 placeholder="name@company.com"
+                required
               />
             </div>
             
@@ -99,6 +126,7 @@ export default function RegisterPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 className="border border-gray-200 bg-gray-50/50 p-2.5 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-blue-600 text-gray-800"
                 placeholder="Create a password"
+                required
               />
             </div>
 
@@ -110,14 +138,16 @@ export default function RegisterPage() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="border border-gray-200 bg-gray-50/50 p-2.5 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-blue-600 text-gray-800"
                 placeholder="Confirm your password"
+                required
               />
             </div>
             
             <button 
               type="submit" 
-              className="bg-[#0B2149] text-white font-bold py-3 px-4 rounded-xl mt-2 hover:bg-blue-900 transition-all text-xs cursor-pointer"
+              disabled={loading}
+              className="bg-[#0B2149] text-white font-bold py-3 px-4 rounded-xl mt-2 hover:bg-blue-900 transition-all text-xs cursor-pointer disabled:opacity-50"
             >
-              → Register
+              {loading ? "Registering..." : "→ Register"}
             </button>
           </form>
 

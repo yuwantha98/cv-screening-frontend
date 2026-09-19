@@ -12,19 +12,20 @@ import {
   Settings,
 } from "lucide-react";
 
+
 const mainLinks = [
   { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
   { label: "Job Postings", path: "/jobs", icon: BriefcaseBusiness },
-  { label: "CV Upload", path: "/cv-upload", icon: Upload },
-  { label: "Candidates", path: "/candidates", icon: Users },
-  { label: "Candidate Ranking", path: "/candidate-ranking", icon: BarChart3 },
+  { label: "CV Upload", path: "/cv/upload", icon: Upload },
+  { label: "Candidates", path: "/candidates/results", icon: Users },
+  { label: "Candidate Ranking", path: "/candidates/ranking", icon: BarChart3 },
   { label: "Reports", path: "/reports", icon: FileText },
   { label: "Export Reports", path: "/reports/export", icon: Download },
-  { label: "Profile / Settings", path: "/profile-settings", icon: Settings },
+  { label: "Profile / Settings", path: "/profile", icon: Settings },
 ];
 
 const adminLinks = [
-  { label: "Admin Dashboard", path: "/admin", icon: ShieldCheck },
+  { label: "Admin Dashboard", path: "/admin/dashboard", icon: ShieldCheck },
   { label: "User Management", path: "/admin/users", icon: UserCog },
 ];
 
