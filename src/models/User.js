@@ -23,8 +23,8 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["HR", "ADMIN"],
-      default: "HR",
+      enum: ["USER", "HR", "ADMIN"],
+      default: "USER",
     },
     status: {
       type: String,
@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema(
       default: "Active",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Yuwantha task: Password Hashing
