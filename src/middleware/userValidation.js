@@ -50,3 +50,22 @@ export function validateLogin(request, response, next) {
 
   next();
 }
+
+// Forgot Password API validation (Diluni's task)
+export function validateForgotPassword(request, response, next) {
+  const { email } = request.body;
+
+  if (!email) {
+    return response.status(400).json({
+      message: "Email is required",
+    });
+  }
+
+  if (!isValidEmail(email)) {
+    return response.status(400).json({
+      message: "Please enter a valid email address",
+    });
+  }
+
+  next();
+}

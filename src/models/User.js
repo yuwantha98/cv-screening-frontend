@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["USER", "HR", "ADMIN"],
+      enum: ["USER", "HR", "ADMIN", "HR Manager", "Recruiter"], 
       default: "USER",
     },
     status: {
@@ -31,17 +31,25 @@ const userSchema = new mongoose.Schema(
       enum: ["Active", "Inactive"],
       default: "Active",
     },
+    // Required fields for Forgot Password
+    resetPasswordToken: {
+      type: String,
+    },
+    resetPasswordExpires: {
+      type: Date,
+    },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
-// Yuwantha task: Password Hashing
+// Password Hashing Middleware
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 
+// Password Verify Method
 userSchema.methods.comparePassword = async function (enteredPassword) {
   return bcrypt.compare(enteredPassword, this.password);
 };

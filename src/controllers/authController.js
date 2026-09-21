@@ -1,10 +1,11 @@
 import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 import User from "../models/User.js";
 
 function createToken(user) {
   return jwt.sign(
     { userId: user._id, role: user.role },
-    process.env.JWT_SECRET,
+    process.env.JWT_SECRET || "supersecretjwtkey123",
     { expiresIn: process.env.JWT_EXPIRES_IN || "7d" }
   );
 }
@@ -20,10 +21,10 @@ function setAuthCookie(response, token) {
   });
 }
 
-// Yuwantha task: Register API
+// Register API
 export async function registerUser(request, response, next) {
   try {
-    const { name, email, password } = request.body;
+    const { name, email, password, role } = request.body;
 
     const existingUser = await User.findOne({
       email: email.toLowerCase(),
@@ -39,6 +40,7 @@ export async function registerUser(request, response, next) {
       name: name.trim(),
       email: email.toLowerCase(),
       password,
+      role: role || "USER",
     });
 
     const token = createToken(user);
@@ -46,6 +48,7 @@ export async function registerUser(request, response, next) {
 
     return response.status(201).json({
       message: "User registered successfully",
+      token,
       user: {
         id: user._id,
         name: user.name,
@@ -59,7 +62,7 @@ export async function registerUser(request, response, next) {
   }
 }
 
-// Yuwantha task: Login API
+// Login API
 export async function loginUser(request, response, next) {
   try {
     const { email, password } = request.body;
@@ -93,6 +96,7 @@ export async function loginUser(request, response, next) {
 
     return response.status(200).json({
       message: "Login successful",
+      token,
       user: {
         id: user._id,
         name: user.name,
@@ -106,11 +110,33 @@ export async function loginUser(request, response, next) {
   }
 }
 
-/*
-TODO - TEAM MEMBERS
-- Logout API
-- /auth/me API
-- Forgot Password API
-- Reset Password API
-- Role authorization
-*/
+// Forgot Password API 
+export async function forgotPassword(request, response, next) {
+  try {
+    const { email } = request.body;
+
+    const user = await User.findOne({ email: email.toLowerCase() });
+
+    if (!user) {
+      return response.status(404).json({
+        message: "User with this email does not exist",
+      });
+    }
+
+    // Generate reset token
+    const resetToken = bcrypt
+      .hashSync(user._id.toString(), 10)
+      .replace(/[/\\$]/g, "");
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour validity
+    await user.save({ validateBeforeSave: false });
+
+    return response.status(200).json({
+      message: "Password reset token generated successfully",
+      resetToken,
+    });
+  } catch (error) {
+    next(error);
+  }
+}

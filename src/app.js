@@ -5,6 +5,7 @@ import helmet from "helmet";
 
 import healthRouter from "./routes/healthRoutes.js";
 import authRouter from "./routes/authRoutes.js";
+import userRouter from "./routes/userRoutes.js"; 
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
 
 const app = express();
@@ -30,6 +31,14 @@ YUWANTHA - COMPLETED BACKEND TASKS
 - User Validation
 */
 app.use("/api/auth", authRouter);
+
+/*
+ME - COMPLETED USER PROFILE & ROLE TASKS
+- User Profile API (/api/users/profile)
+- Update Profile API (/api/users/profile)
+- Admin Protected Route (/api/users/admin-dashboard)
+*/
+app.use("/api/users", userRouter);
 
 /*
 TODO - OTHER TEAM MEMBERS
