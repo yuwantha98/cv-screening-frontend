@@ -8,6 +8,8 @@ import authRouter from "./routes/authRoutes.js";
 import userRouter from "./routes/userRoutes.js"; 
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
 
+import jobRouter from "./routes/jobRoutes.js";
+
 const app = express();
 const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
 
@@ -39,6 +41,7 @@ ME - COMPLETED USER PROFILE & ROLE TASKS
 - Admin Protected Route (/api/users/admin-dashboard)
 */
 app.use("/api/users", userRouter);
+app.use("/api/jobs", jobRouter);
 
 /*
 TODO - OTHER TEAM MEMBERS
