@@ -5,6 +5,7 @@ import helmet from "helmet";
 
 import healthRouter from "./routes/healthRoutes.js";
 import authRouter from "./routes/authRoutes.js";
+import jobRouter from "./routes/jobRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
 
 const app = express();
@@ -22,23 +23,9 @@ app.get("/", (_request, response) => {
 
 app.use("/api/health", healthRouter);
 
-/*
-YUWANTHA - COMPLETED BACKEND TASKS
-- Register API
-- Login API
-- Password Hashing
-- User Validation
-*/
-app.use("/api/auth", authRouter);
-
-/*
-TODO - OTHER TEAM MEMBERS
 app.use("/api/jobs", jobRouter);
-app.use("/api/cv", cvRouter);
-app.use("/api/candidates", candidateRouter);
-app.use("/api/reports", reportRouter);
-app.use("/api/admin", adminRouter);
-*/
+
+app.use("/api/auth", authRouter);
 
 app.use(notFound);
 app.use(errorHandler);
