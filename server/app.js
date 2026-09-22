@@ -2,6 +2,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import express from "express";
 import helmet from "helmet";
+import cvRouter from "./routes/cvRoutes.js";
 import healthRouter from "./routes/healthRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
 
@@ -19,6 +20,7 @@ app.get("/", (_request, response) => {
 });
 
 app.use("/api/health", healthRouter);
+app.use("/api/cv", cvRouter);
 
 app.use(notFound);
 app.use(errorHandler);
