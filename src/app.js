@@ -9,6 +9,7 @@ import userRouter from "./routes/userRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
 
 import jobRouter from "./routes/jobRoutes.js";
+import candidateRouter from "./routes/candidateRoutes.js";
 
 const app = express();
 const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
@@ -41,13 +42,14 @@ ME - COMPLETED USER PROFILE & ROLE TASKS
 - Admin Protected Route (/api/users/admin-dashboard)
 */
 app.use("/api/users", userRouter);
+
+// SPRINT 2 & 3 TASKS
 app.use("/api/jobs", jobRouter);
+app.use("/api/candidates", candidateRouter);
 
 /*
 TODO - OTHER TEAM MEMBERS
-app.use("/api/jobs", jobRouter);
 app.use("/api/cv", cvRouter);
-app.use("/api/candidates", candidateRouter);
 app.use("/api/reports", reportRouter);
 app.use("/api/admin", adminRouter);
 */
