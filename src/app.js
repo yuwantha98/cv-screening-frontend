@@ -10,6 +10,7 @@ import { errorHandler, notFound } from "./middleware/errorHandler.js";
 
 import jobRouter from "./routes/jobRoutes.js";
 import candidateRouter from "./routes/candidateRoutes.js";
+import reportRouter from "./routes/reportRoutes.js"; // Added report router import
 
 const app = express();
 const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
@@ -43,14 +44,14 @@ ME - COMPLETED USER PROFILE & ROLE TASKS
 */
 app.use("/api/users", userRouter);
 
-// SPRINT 2 & 3 TASKS
+// SPRINT 2, 3 & 4 TASKS
 app.use("/api/jobs", jobRouter);
 app.use("/api/candidates", candidateRouter);
+app.use("/api/reports", reportRouter); // Added report route
 
 /*
 TODO - OTHER TEAM MEMBERS
 app.use("/api/cv", cvRouter);
-app.use("/api/reports", reportRouter);
 app.use("/api/admin", adminRouter);
 */
 
